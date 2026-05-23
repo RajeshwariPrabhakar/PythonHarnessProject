@@ -11,14 +11,7 @@ pipeline:
         spec:
           cloneCodebase: false
           infrastructure:
-            type: Cloud
-            spec:
-              type: Linux
-              spec:
-                architecture: Amd64
-                os: Ubuntu
-                build:
-                  type: Machine
+            useFromStage: ""
           execution:
             steps:
               - step:
@@ -26,6 +19,8 @@ pipeline:
                   name: Install Dependencies and Test
                   identifier: install_and_test
                   spec:
+                    connectorRef: account.harnessImage
+                    image: python:3.10-slim
                     shell: Bash
                     command: |-
                       echo "Installing testing tools..."
@@ -53,6 +48,8 @@ pipeline:
                   name: Run Production Script
                   identifier: run_script
                   spec:
+                    connectorRef: account.harnessImage
+                    image: python:3.10-slim
                     shell: Bash
                     command: |-
                       echo "Creating inline application file..."
