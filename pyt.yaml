@@ -1,6 +1,6 @@
 pipeline:
-  name: py1
-  identifier: py1
+  name: pyt
+  identifier: pyt
   projectIdentifier: default
   orgIdentifier: default
   stages:
