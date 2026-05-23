@@ -1,7 +1,7 @@
 pipeline:
-  name: pyt
-  identifier: pyt
-  projectIdentifier: default
+  name: py1
+  identifier: py1
+  projectIdentifier: default_project
   orgIdentifier: default
   stages:
     - stage:
@@ -9,7 +9,7 @@ pipeline:
         identifier: Execute_Python
         type: CI
         spec:
-          cloneCodebase: true
+          cloneCodebase: false
           infrastructure:
             type: Hosted
             spec:
@@ -26,6 +26,16 @@ pipeline:
                       echo "Installing testing tools..."
                       pip install pytest
                       
+                      echo "Creating inline test file..."
+                      cat << 'EOF' > test_app.py
+                      def add_numbers(a, b): 
+                          return a + b
+
+                      def test_add_numbers(): 
+                          assert add_numbers(2, 3) == 5
+                          assert add_numbers(-1, 1) == 0
+                      EOF
+                      
                       echo "Running test suite and creating JUnit XML report..."
                       pytest test_app.py --junitxml=results.xml
                     reports:
@@ -40,11 +50,15 @@ pipeline:
                   spec:
                     shell: Bash
                     command: |-
+                      echo "Creating inline application file..."
+                      cat << 'EOF' > app.py
+                      def add_numbers(a, b):
+                          return a + b
+
+                      if __name__ == "__main__":
+                          result = add_numbers(5, 7)
+                          print(f"Success! The calculation result is: {result}")
+                      EOF
+                      
                       echo "Executing main script..."
                       python app.py
-          codebase:
-            connectorRef: YOUR_ACTUAL_GITHUB_CONNECTOR_ID  # <--- Change this to your real ID string
-            build:
-              type: branch
-              spec:
-                branch: main
