@@ -13,7 +13,7 @@ pipeline:
           infrastructure:
             type: Kubernetes
             spec:
-              connectorRef: local_laptop_runner  # <--- We will create this connection ID next
+              connectorRef: local_laptop_runner
               namespace: harness-delegate-ng
           execution:
             steps:
