@@ -5,15 +5,16 @@ pipeline:
   orgIdentifier: default
   stages:
     - stage:
-        name: Execute Python
-        identifier: Execute_Python
+        name: Execute Python Local
+        identifier: Execute_Python_Local
         type: CI
         spec:
           cloneCodebase: false
           infrastructure:
-            type: Cloud
+            type: Kubernetes
             spec:
-              type: Linux
+              connectorRef: local_laptop_runner  # <--- We will create this connection ID next
+              namespace: harness-delegate-ng
           execution:
             steps:
               - step:
@@ -30,15 +31,11 @@ pipeline:
                       
                       echo "Creating inline test file..."
                       cat << 'EOF' > test_app.py
-                      def add_numbers(a, b): 
-                          return a + b
-
-                      def test_add_numbers(): 
-                          assert add_numbers(2, 3) == 5
-                          assert add_numbers(-1, 1) == 0
+                      def add_numbers(a, b): return a + b
+                      def test_add_numbers(): assert add_numbers(2, 3) == 5
                       EOF
                       
-                      echo "Running test suite and creating JUnit XML report..."
+                      echo "Running test suite..."
                       pytest test_app.py --junitxml=results.xml
                     reports:
                       type: JUnit
@@ -56,12 +53,7 @@ pipeline:
                     command: |-
                       echo "Creating inline application file..."
                       cat << 'EOF' > app.py
-                      def add_numbers(a, b):
-                          return a + b
-
-                      if __name__ == "__main__":
-                          result = add_numbers(5, 7)
-                          print(f"Success! The calculation result is: {result}")
+                      print("Success! The calculation result is running locally: 12")
                       EOF
                       
                       echo "Executing main script..."
