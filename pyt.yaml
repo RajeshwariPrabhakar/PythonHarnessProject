@@ -11,9 +11,14 @@ pipeline:
         spec:
           cloneCodebase: false
           infrastructure:
-            type: Hosted
+            type: Cloud
             spec:
-              type: Cloud
+              type: Linux
+              spec:
+                architecture: Amd64
+                os: Ubuntu
+                build:
+                  type: Machine
           execution:
             steps:
               - step:
