@@ -11,7 +11,9 @@ pipeline:
         spec:
           cloneCodebase: false
           infrastructure:
-            useFromStage: ""
+            type: Cloud
+            spec:
+              type: Linux
           execution:
             steps:
               - step:
