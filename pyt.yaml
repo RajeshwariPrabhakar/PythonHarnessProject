@@ -1,0 +1,50 @@
+pipeline:
+  name: py1
+  identifier: py1
+  projectIdentifier: default
+  orgIdentifier: default
+  stages:
+    - stage:
+        name: Execute Python
+        identifier: Execute_Python
+        type: CI
+        spec:
+          cloneCodebase: true
+          infrastructure:
+            type: Hosted
+            spec:
+              type: Cloud
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Install Dependencies and Test
+                  identifier: install_and_test
+                  spec:
+                    shell: Bash
+                    command: |-
+                      echo "Installing testing tools..."
+                      pip install pytest
+                      
+                      echo "Running test suite and creating JUnit XML report..."
+                      pytest test_app.py --junitxml=results.xml
+                    reports:
+                      type: JUnit
+                      spec:
+                        paths:
+                          - "results.xml"
+              - step:
+                  type: Run
+                  name: Run Production Script
+                  identifier: run_script
+                  spec:
+                    shell: Bash
+                    command: |-
+                      echo "Executing main script..."
+                      python app.py
+          codebase:
+            connectorRef: YOUR_ACTUAL_GITHUB_CONNECTOR_ID  # <--- Change this to your real ID string
+            build:
+              type: branch
+              spec:
+                branch: main
